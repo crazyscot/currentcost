@@ -6,6 +6,7 @@
 
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
+use SerialLock;
 
 my $BAUD = "57600";
 my $RRD = "/var/lib/collectd/rrd/currentcost.rrd";
@@ -55,6 +56,16 @@ $a = shift @ARGV;
 die "unknown argument" if (defined $a);
 
 die "No RRD ($RRD)" unless -f $RRD;
+
+die "Cannot lock port" unless 1==slock($PORT);
+
+sub cleanup {
+	#print "unlocking $PORT\n";
+	sunlock($PORT);
+	exit 0;
+}
+$SIG{'__DIE__'} = \&cleanup;
+$SIG{'INT'} = \&cleanup;
 
 my $ob = Device::SerialPort->new($PORT);
 unless (-c $PORT && defined($ob)) {
