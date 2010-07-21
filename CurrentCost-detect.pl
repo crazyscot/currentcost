@@ -7,6 +7,7 @@
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
 use Fcntl;
+use SerialLock;
 
 #die "port not specified" unless defined $PORT and -c $PORT;
 # TODO: If multiple ttyUSBs around, autodetect which is which...
@@ -21,11 +22,15 @@ my $dbg = (defined $arg && ($arg eq "--debug"));
 my ($PORT,$FOUND);
 
 for $PORT (@ports) {
-
 	chomp $PORT;
+	unless (slock($PORT)) {
+		warn "port $PORT is locked" if $dbg;
+		next
+	}
 	my $ob = Device::SerialPort->new($PORT);
 	unless (-c $PORT && defined($ob)) {
 		warn "cannot set up for port $PORT!";
+		sunlock($PORT);
 		next;
 	}
 
@@ -39,6 +44,7 @@ for $PORT (@ports) {
 
 	unless (sysopen(SERIAL, "$PORT", O_NONBLOCK|O_RDWR)) {
 		warn "opening serial $PORT: $!";
+		sunlock($PORT);
 		next;
 	};
 
@@ -65,6 +71,7 @@ for $PORT (@ports) {
 
 	$ob->close or warn "closing $PORT failed: $!";
 	close SERIAL or warn "closing $PORT: $!";
+	sunlock($PORT);
 
 	last if defined $FOUND;
 }
@@ -72,5 +79,5 @@ for $PORT (@ports) {
 die "No working devices" unless defined $FOUND;
 
 print "OK, using $FOUND\n" if $dbg;
-system("/usr/local/rrd/CurrentCost.pl $FOUND");
+exec("/usr/local/rrd/CurrentCost.pl $FOUND");
 
