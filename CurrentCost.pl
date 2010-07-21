@@ -7,9 +7,6 @@
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
 
-my $PORT = "/dev/ttyUSB0";
-# TODO: If multiple ttyUSBs around, autodetect which is which...
-
 my $BAUD = "57600";
 my $RRD = "/var/lib/collectd/rrd/currentcost.rrd";
 
@@ -49,6 +46,12 @@ EOT
 	exit 0;
 }
 
+my $PORT = $a;
+die "port not specified" unless defined $PORT;
+die "port $PORT does not exist" unless -c $PORT;
+# TODO: If multiple ttyUSBs around, autodetect which is which...
+
+$a = shift @ARGV;
 die "unknown argument" if (defined $a);
 
 die "No RRD ($RRD)" unless -f $RRD;
