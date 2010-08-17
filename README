@@ -1,0 +1,9 @@
+This repository contains the scripts I use to monitor my CurrentCost
+widget. Copy them to /usr/local/rrd/ (or someplace else and fix up the
+hard-coded paths), then read the instructions at the top of
+CurrentCost.pl and/or CurrentCost-detect.pl.
+
+The rrd graphing code isn't here; it's done by a very messy script that 
+isn't currently fit to publish. However http://www.jibble.org/currentcost/
+- which I drew on in creating these scripts - contains some useful
+pointers.
