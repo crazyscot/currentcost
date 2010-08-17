@@ -7,6 +7,7 @@
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
 use Fcntl;
+use lib "/usr/local/rrd";
 use SerialLock;
 
 #die "port not specified" unless defined $PORT and -c $PORT;

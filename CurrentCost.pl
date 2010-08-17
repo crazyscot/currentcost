@@ -6,6 +6,7 @@
 
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
+use lib "/usr/local/rrd";
 use SerialLock;
 
 my $BAUD = "57600";
