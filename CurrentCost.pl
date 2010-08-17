@@ -1,8 +1,22 @@
 #!/usr/bin/perl -w
-
-# Reads data from a Current Cost device via serial port.
-# Run me from /etc/crontab with a line like:
-#     @reboot root /usr/local/rrd/CurrentCost.pl
+# Current Cost monitoring/rrd initialisation script
+# Copyright (C) 2010 W R Younger.
+#
+# This script may be considered to be a derivative of earlier work 
+# by Paul Mutton (http://www.jibble.org/currentcost/). I have 
+# merged the initialisation into one and added serial port locking
+# (via a separate perl module). See also CurrentCost-detect.pl.
+#
+######################################################################
+#
+# Usage: CurrentCost.pl SERIALPORT     # normal mode, runs forever
+#        CurrentCost.pl --create-rrd   # initialises our RRD then exits
+#
+# NOTE: Before running this script or CurrentCost-detect.pl for the very
+# first time, you must (once) run it in --create-rrd mode.
+#
+# In most circumstances I recommend using the CurrentCost-detect.pl script,
+# rather than this one directly.
 
 use strict;
 use Device::SerialPort qw( :PARAM :STAT 0.07 );
@@ -51,7 +65,6 @@ EOT
 my $PORT = $a;
 die "port not specified" unless defined $PORT;
 die "port $PORT does not exist" unless -c $PORT;
-# TODO: If multiple ttyUSBs around, autodetect which is which...
 
 $a = shift @ARGV;
 die "unknown argument" if (defined $a);
