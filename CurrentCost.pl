@@ -17,8 +17,9 @@
 #
 #
 # This script may be considered to be a derivative of earlier work 
-# by Paul Mutton (http://www.jibble.org/currentcost/). I have 
-# merged the initialisation into the script and added serial port
+# by Paul Mutton (http://www.jibble.org/currentcost/), which was
+# released as "public domain with attribution".
+# I have merged the initialisation into the script and added serial port
 # locking (via a separate perl module). See also CurrentCost-detect.pl.
 # - wry
 #
